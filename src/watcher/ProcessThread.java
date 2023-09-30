@@ -18,8 +18,8 @@ public class ProcessThread implements Runnable {
         try {
             Product product;
             while ((product = queue.take()).getName() != null) {
-                updateProducts(product, localProducts);
-                updateProducts(product, Main.allProduct);
+                updateGlobalProducts(product);
+                updateLocalProducts(product);
                 printProductState();
             }
         } catch (InterruptedException e) {
@@ -27,12 +27,22 @@ public class ProcessThread implements Runnable {
         }
     }
 
-    private void updateProducts(Product product, HashMap<String, Integer> products) {
-        Integer totalAmount = products.get(product.getName());
-        if (totalAmount == null)
-            totalAmount = 0;
-        totalAmount += product.getAmount();
-        products.put(product.getName(), totalAmount);
+    private void updateGlobalProducts(Product product) {
+        synchronized (Main.allProduct){
+            Integer totalAmount = Main.allProduct.get(product.getName());
+            if (totalAmount == null)
+                totalAmount = 0;
+            totalAmount += product.getAmount();
+            Main.allProduct.put(product.getName(), totalAmount);
+        }
+    }
+
+    private void updateLocalProducts(Product product) {
+            Integer totalAmount = localProducts.get(product.getName());
+            if (totalAmount == null)
+                totalAmount = 0;
+            totalAmount += product.getAmount();
+            localProducts.put(product.getName(), totalAmount);
     }
 
     private void printProductState() {

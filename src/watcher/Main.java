@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 public class Main {
 
     public static List<BlockingQueue<Product>> blockingQueuelist = new ArrayList<>();
-    public static HashMap<String,Integer> allProduct = new HashMap<>();
+    public static final HashMap<String,Integer> allProduct = new HashMap<>();
 
     public static void main(String[] args) throws IOException{
         for (char c = 'A'; c <= 'Z'; ++c) {
