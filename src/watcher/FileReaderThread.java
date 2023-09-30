@@ -2,14 +2,16 @@ package watcher;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 public class FileReaderThread implements Runnable {
-    private final List<BlockingQueue<Product>> blockingQueuelist;
+    private final HashMap<Character,BlockingQueue<Product>> blockingQueueMap;
 
-    public FileReaderThread(List<BlockingQueue<Product>> blockingQueuelist) throws IOException {
-        this.blockingQueuelist = blockingQueuelist;
+    public FileReaderThread(HashMap<Character,BlockingQueue<Product>> blockingQueueMap) throws IOException {
+        this.blockingQueueMap = blockingQueueMap;
         this.watchService = FileSystems.getDefault().newWatchService();
         Path path = Paths.get(PRODUCTS_PATHS);
         path.register(
@@ -52,13 +54,11 @@ public class FileReaderThread implements Runnable {
 
     private void putQueue(String line, String fileName) throws InterruptedException {
         char fileType = fileName.charAt(0);
-        int index = (int) fileType - 65;
-
         String[] splitLine = line.split(":");
         String productName = splitLine[0];
         int amount  = Integer.parseInt(splitLine[1]);
         Product product = new Product(productName, amount);
 
-        blockingQueuelist.get(index).put(product);
+        blockingQueueMap.get(fileType).put(product);
     }
 }

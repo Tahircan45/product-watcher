@@ -1,6 +1,7 @@
 package watcher;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 public class ProcessThread implements Runnable {
@@ -18,8 +19,8 @@ public class ProcessThread implements Runnable {
         try {
             Product product;
             while ((product = queue.take()).getName() != null) {
-                updateGlobalProducts(product);
-                updateLocalProducts(product);
+                updateProducts(product,Main.globalProducts);
+                updateProducts(product,localProducts);
                 printProductState();
             }
         } catch (InterruptedException e) {
@@ -27,30 +28,20 @@ public class ProcessThread implements Runnable {
         }
     }
 
-    private void updateGlobalProducts(Product product) {
-        synchronized (Main.allProduct){
-            Integer totalAmount = Main.allProduct.get(product.getName());
-            if (totalAmount == null)
-                totalAmount = 0;
-            totalAmount += product.getAmount();
-            Main.allProduct.put(product.getName(), totalAmount);
-        }
-    }
-
-    private void updateLocalProducts(Product product) {
-            Integer totalAmount = localProducts.get(product.getName());
-            if (totalAmount == null)
-                totalAmount = 0;
-            totalAmount += product.getAmount();
-            localProducts.put(product.getName(), totalAmount);
+    private void updateProducts(Product product, Map<String,Integer> productMap) {
+        Integer totalAmount = productMap.get(product.getName());
+        if (totalAmount == null)
+            totalAmount = 0;
+        totalAmount += product.getAmount();
+        productMap.put(product.getName(), totalAmount);
     }
 
     private void printProductState() {
         System.out.println("Local - " + name);
-        System.out.println(localProducts.toString());
+        System.out.println(localProducts);
 
         System.out.println("Global");
-        System.out.println(Main.allProduct.toString());
+        System.out.println(Main.globalProducts);
 
         System.out.println();
         System.out.println("-------------------");

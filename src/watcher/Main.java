@@ -1,25 +1,23 @@
 package watcher;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class Main {
 
-    public static List<BlockingQueue<Product>> blockingQueuelist = new ArrayList<>();
-    public static final HashMap<String,Integer> allProduct = new HashMap<>();
+    public static HashMap<Character,BlockingQueue<Product>> blockingQueueMap = new HashMap<>();
+    public static final Map<String,Integer> globalProducts = Collections.synchronizedMap(new HashMap<>()) ;
 
     public static void main(String[] args) throws IOException{
         for (char c = 'A'; c <= 'Z'; ++c) {
             LinkedBlockingQueue<Product> blockingQueue = new LinkedBlockingQueue<>();
-            blockingQueuelist.add(blockingQueue);
+            blockingQueueMap.put(c,blockingQueue);
 
             Thread processThread = new Thread(new ProcessThread(blockingQueue,String.valueOf(c)));
             processThread.start();
         }
-        Thread fileReaderThread = new Thread(new FileReaderThread(blockingQueuelist));
+        Thread fileReaderThread = new Thread(new FileReaderThread(blockingQueueMap));
         fileReaderThread.start();
     }
 }
