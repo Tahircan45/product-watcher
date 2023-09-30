@@ -38,16 +38,16 @@ public class FileReaderThread implements Runnable {
     }
 
     public String readFirstLine(String fileName) throws IOException{
-            String filePath = PRODUCTS_PATHS + "/" + fileName;
-            File file = new File(filePath);
-            FileReader fileReader = new FileReader(file);
-            BufferedReader reader = new BufferedReader(fileReader);
-            String line = reader.readLine();
-            reader.close();
-            fileReader.close();
-            file.delete();
+        String filePath = PRODUCTS_PATHS + "/" + fileName;
+        File file = new File(filePath);
+        FileReader fileReader = new FileReader(file);
+        BufferedReader reader = new BufferedReader(fileReader);
+        String line = reader.readLine();
+        reader.close();
+        fileReader.close();
+        file.delete();
 
-            return line;
+        return line;
     }
 
     private void putQueue(String line, String fileName) throws InterruptedException {
