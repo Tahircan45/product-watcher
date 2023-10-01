@@ -21,7 +21,7 @@ public class ProcessThread implements Runnable {
             while ((product = queue.take()).getName() != null) {
                 updateProducts(product,Main.globalProducts);
                 updateProducts(product,localProducts);
-                printProductState();
+                printProductState(product.getName());
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -36,12 +36,9 @@ public class ProcessThread implements Runnable {
         productMap.put(product.getName(), totalAmount);
     }
 
-    private void printProductState() {
-        System.out.println("Local - " + name);
-        System.out.println(localProducts);
-
-        System.out.println("Global");
-        System.out.println(Main.globalProducts);
+    private void printProductState(String productName) {
+        System.out.println(name+ " - Local Products ==> " +localProducts );
+        System.out.println("Last updated global product ==> "+productName +" : "+Main.globalProducts.get(productName));
 
         System.out.println();
         System.out.println("-------------------");

@@ -29,8 +29,11 @@ public class FileReaderThread implements Runnable {
             while ((key = watchService.take()) != null) {
                 for (WatchEvent<?> event : key.pollEvents()) {
                     String fileName = event.context().toString();
-                    String firstLine = readFirstLine(fileName);
-                    putQueue(firstLine, fileName);
+                    if(isTextFile(fileName)){
+                        String firstLine = readFirstLine(fileName);
+                        putQueue(firstLine, fileName);
+                    }
+
                 }
                 key.reset();
             }
@@ -60,5 +63,9 @@ public class FileReaderThread implements Runnable {
         Product product = new Product(productName, amount);
 
         blockingQueueMap.get(fileType).put(product);
+    }
+
+    private boolean isTextFile(String fileName) {
+        return (fileName.endsWith(".txt"));
     }
 }
